@@ -1,0 +1,51 @@
+# Go
+/bin/
+/pkg/
+/vendor/
+/*.exe
+/*.exe~
+/*.dll
+/*.so
+/*.dylib
+
+# Go build cache
+**/go.sum
+**/go.mod
+**/Gopkg.lock
+**/Gopkg.toml
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# IDEs
+.vscode/
+.idea/
+
+# Node.js / Vue / Vite
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Optional: PostgreSQL data volume mount (falls lokal)
+postgres_data/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp

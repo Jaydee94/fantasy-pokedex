@@ -1,15 +1,19 @@
 package models
 
+import (
+	"github.com/lib/pq"
+)
+
 type Pokemon struct {
-	ID           uint     `json:"id" gorm:"primaryKey"`
-	Name         string   `json:"name"`
-	Types        []string `json:"types" gorm:"type:text[]"`
-	Category     string   `json:"category"`
-	HeightM      float64  `json:"height_m"`
-	WeightKg     float64  `json:"weight_kg"`
-	Ability      string   `json:"ability"`
-	Appearance   string   `json:"appearance"`
-	Attacks      []string `json:"attacks" gorm:"type:text[]"`
-	PokedexEntry string   `json:"pokedex_entry"`
-	ImageURL     string   `json:"image_url"`
+	ID           uint `gorm:"primaryKey"`
+	Name         string
+	Types        pq.StringArray `gorm:"type:text[]"`
+	PokedexEntry string
+	ImageData    []byte `gorm:"type:bytea"`
+	Appearance   string
+	Attacks      pq.StringArray `gorm:"type:text[]"`
+	Ability      string
+	HeightM      float64
+	WeightKg     float64
+	Category     string
 }

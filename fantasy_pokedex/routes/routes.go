@@ -10,4 +10,5 @@ func RegisterRoutes(r *gin.Engine) {
 	r.GET("/pokemon", controllers.GetPokemon)
 	r.GET("/pokemon/:id", controllers.GetPokemonByID)
 	r.POST("/pokemon", controllers.CreatePokemon)
+
 }

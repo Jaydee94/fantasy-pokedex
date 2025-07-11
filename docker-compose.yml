@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: fantasy-pokedex-postgres
+    environment:
+      POSTGRES_DB: fantasy_pokedex
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./fantasy_pokedex
+    container_name: fantasy-pokedex-backend
+    environment:
+      DATABASE_URL: postgres://postgres:yourpassword@db:5432/fantasy_pokedex?sslmode=disable
+      GIN_MODE: debug
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+
+  frontend:
+    container_name: fantasy-pokedex-frontend
+    working_dir: /app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    depends_on:
+      - backend
+    command: ["npm", "run", "dev"]
+    restart: on-failure
+
+volumes:
+  postgres_data:
