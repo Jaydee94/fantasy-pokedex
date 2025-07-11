@@ -5,16 +5,15 @@ import (
 	"fantasy_pokedex/config"
 	"fantasy_pokedex/models"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-type CreatePokemonRequest struct {
+type CreatePokemonInput struct {
 	Name         string   `json:"Name"`
 	Types        []string `json:"Types"`
 	PokedexEntry string   `json:"PokedexEntry"`
-	ImageBase64  string   `json:"ImageBase64"` // base64 String vom Frontend
+	ImageData    string   `json:"ImageData"`
 	Appearance   string   `json:"Appearance"`
 	Attacks      []string `json:"Attacks"`
 	Ability      string   `json:"Ability"`
@@ -38,39 +37,34 @@ type PokemonResponse struct {
 }
 
 func CreatePokemon(c *gin.Context) {
-	var req CreatePokemonRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	var input CreatePokemonInput
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Base64 String bereinigen (falls mit Data-URL-Schema)
-	base64Data := req.ImageBase64
-	if idx := strings.Index(base64Data, ","); idx != -1 {
-		base64Data = base64Data[idx+1:]
-	}
-
-	imageData, err := base64.StdEncoding.DecodeString(base64Data)
+	// 📥 Base64 dekodieren
+	imageBytes, err := base64.StdEncoding.DecodeString(input.ImageData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid base64 image data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bild konnte nicht dekodiert werden"})
 		return
 	}
 
 	pokemon := models.Pokemon{
-		Name:         req.Name,
-		Types:        req.Types,
-		PokedexEntry: req.PokedexEntry,
-		ImageData:    imageData,
-		Appearance:   req.Appearance,
-		Attacks:      req.Attacks,
-		Ability:      req.Ability,
-		HeightM:      req.HeightM,
-		WeightKg:     req.WeightKg,
-		Category:     req.Category,
+		Name:         input.Name,
+		Types:        input.Types,
+		PokedexEntry: input.PokedexEntry,
+		ImageData:    imageBytes,
+		Appearance:   input.Appearance,
+		Attacks:      input.Attacks,
+		Ability:      input.Ability,
+		HeightM:      input.HeightM,
+		WeightKg:     input.WeightKg,
+		Category:     input.Category,
 	}
 
 	if err := config.DB.Create(&pokemon).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create pokemon"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Fehler beim Speichern"})
 		return
 	}
 
