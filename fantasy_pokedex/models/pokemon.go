@@ -5,8 +5,7 @@ import (
 )
 
 type Pokemon struct {
-	ID           uint `gorm:"primaryKey"`
-	Name         string
+	Name         string         `gorm:"primaryKey"`
 	Types        pq.StringArray `gorm:"type:text[]"`
 	PokedexEntry string
 	ImageData    []byte `gorm:"type:bytea"`

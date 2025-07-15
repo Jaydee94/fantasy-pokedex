@@ -43,7 +43,6 @@ func CreatePokemon(c *gin.Context) {
 		return
 	}
 
-	// 📥 Base64 dekodieren
 	imageBytes, err := base64.StdEncoding.DecodeString(input.ImageData)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bild konnte nicht dekodiert werden"})
@@ -73,7 +72,6 @@ func CreatePokemon(c *gin.Context) {
 
 func toPokemonResponse(p models.Pokemon) PokemonResponse {
 	return PokemonResponse{
-		ID:           p.ID,
 		Name:         p.Name,
 		Types:        p.Types,
 		PokedexEntry: p.PokedexEntry,
@@ -99,11 +97,11 @@ func GetPokemon(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetPokemonByID(c *gin.Context) {
+func GetPokemonByName(c *gin.Context) {
 	var pokemon models.Pokemon
-	id := c.Param("id")
+	name := c.Param("name")
 
-	if err := config.DB.First(&pokemon, id).Error; err != nil {
+	if err := config.DB.First(&pokemon, name).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pokemon not found"})
 		return
 	}

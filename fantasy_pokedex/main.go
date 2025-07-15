@@ -22,11 +22,10 @@ func createDummyPokemon() {
 	}
 
 	dummyPokemon := models.Pokemon{
-		ID:           1,
 		Name:         "Testmon",
 		Types:        []string{"Fire", "Flying"},
 		PokedexEntry: "Testmon is a fictional Pokemon used for testing purposes.",
-		ImageData:    imageData, // Bildbytes hier rein
+		ImageData:    imageData,
 		Appearance:   "A small, red, dragon-like creature with wings.",
 		Attacks:      []string{"Flame Burst", "Wing Attack"},
 		Ability:      "Test Ability",

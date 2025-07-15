@@ -4,42 +4,42 @@
 
     <v-text-field
       v-model="form.TypesString"
-      label="Typen (kommagetrennt, z.B. Fire, Flying)"
+      label="Types (comma separated, e.g. Fire, Ground)"
     />
 
-    <v-textarea v-model="form.PokedexEntry" label="Pokédex-Eintrag" />
+    <v-textarea v-model="form.PokedexEntry" label="Pokédex-Entry" />
 
     <!-- Neuer Upload Input -->
     <v-file-input
       v-model="form.ImageFile"
       accept="image/*"
       clearable
-      label="Bild hochladen"
+      label="Upload Picture"
       prepend-icon="mdi-upload"
       show-size
     />
 
-    <v-textarea v-model="form.Appearance" label="Aussehen" />
+    <v-textarea v-model="form.Appearance" label="Appearance" />
 
     <v-text-field
       v-model="form.AttacksString"
-      label="Attacken (kommagetrennt, z. B. Tackle, Growl)"
+      label="AAttacks (comma separated, e.g. Fire, Ground)"
     />
 
-    <v-text-field v-model="form.Ability" label="Fähigkeit" />
+    <v-text-field v-model="form.Ability" label="Ability" />
     <v-text-field
       v-model="form.HeightM"
-      label="Größe in Metern"
+      label="Size in Meter"
       step="0.01"
       type="number"
     />
     <v-text-field
       v-model="form.WeightKg"
-      label="Gewicht in Kilogramm"
+      label="Weight in Kilograms"
       step="0.01"
       type="number"
     />
-    <v-text-field v-model="form.Category" label="Kategorie" />
+    <v-text-field v-model="form.Category" label="Category" />
 
     <v-btn class="mt-2" color="primary" :disabled="loading" type="submit">
       Pokémon erstellen
@@ -68,7 +68,7 @@
 
   const submit = async () => {
     if (!form.ImageFile) {
-      alert('Bitte ein Bild auswählen.')
+      alert('Please select an image file.')
       return
     }
 
@@ -91,13 +91,13 @@
       loading.value = true
       try {
         await api.post('/pokemon', payload)
-        alert('Pokémon erfolgreich erstellt!')
+        alert('Successfully created pokemon')
         for (const key of Object.keys(form)) {
           form[key] = key === 'ImageFile' ? null : ''
         }
       } catch (error) {
-        console.error('Fehler beim Erstellen:', error)
-        alert('Fehler beim Erstellen des Pokémon')
+        console.error('Error creating pokemon', error)
+        alert('Error creating pokemon')
       } finally {
         loading.value = false
       }
