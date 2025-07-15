@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <h1 class="text-h4 font-weight-bold mb-4 text-center">My Pokedex</h1>
     <PokemonList />
   </v-container>
 </template>
