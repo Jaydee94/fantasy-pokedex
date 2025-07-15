@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: docker.io/postgres:16
     container_name: fantasy-pokedex-postgres
     environment:
       POSTGRES_DB: fantasy_pokedex
