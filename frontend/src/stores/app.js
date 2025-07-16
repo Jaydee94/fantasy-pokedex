@@ -7,14 +7,14 @@ export const useAppStore = defineStore('app', {
     adminError: null,
   }),
   actions: {
-    login(password) {
-      // Simple hardcoded password for demo; replace with real auth in production
-      if (password === 'admin123') {
+    async login(password) {
+      try {
+        const res = await import('../services/api').then(m => m.default.post('/admin/login', { password }))
         this.isAdmin = true;
         this.adminError = null;
         return true;
-      } else {
-        this.adminError = 'Wrong password';
+      } catch (e) {
+        this.adminError = e.response?.data?.error || 'Wrong password';
         this.isAdmin = false;
         return false;
       }

@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <AdminSetPassword v-if="showSetPassword" />
     <v-app-bar app color="blue-grey-darken-2" dark height="80">
       <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;">
         <v-img
@@ -26,11 +27,24 @@
 
 <script setup>
 import AdminLogin from './components/AdminLogin.vue'
+import AdminSetPassword from './components/AdminSetPassword.vue'
 import { useAppStore } from './stores/app'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { isAdminPasswordSet } from './services/admin'
 
 const appStore = useAppStore()
 const isAdmin = computed(() => appStore.isAdmin)
+const showSetPassword = ref(false)
+
+onMounted(async () => {
+  try {
+    const set = await isAdminPasswordSet()
+    showSetPassword.value = !set
+  } catch (e) {
+    showSetPassword.value = false
+  }
+})
+
 function logout() {
   appStore.logout()
 }

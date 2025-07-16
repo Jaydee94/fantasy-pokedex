@@ -10,6 +10,21 @@
     >
       {{ alertMsg }}
     </v-alert>
+
+    <v-dialog v-model="showDeleteDialog" max-width="400">
+      <v-card>
+        <v-card-title>Löschen bestätigen</v-card-title>
+        <v-card-text>
+          Soll das Pokémon <b>{{ pokemonToDelete?.Name }}</b> wirklich gelöscht werden?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="red" @click="confirmDelete">Löschen</v-btn>
+          <v-btn text @click="showDeleteDialog = false">Abbrechen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-row>
       <v-col
         v-for="pokemon in pokemons"
@@ -18,7 +33,7 @@
         md="4"
         sm="6"
       >
-        <PokemonCard :pokemon="pokemon" @delete="deletePokemon" />
+        <PokemonCard :pokemon="pokemon" @delete="askDelete" />
       </v-col>
     </v-row>
   </div>
@@ -49,14 +64,25 @@ function showAlert(msg, type = 'success') {
   }, 2000)
 }
 
-async function deletePokemon(pokemon) {
-  if (!confirm(`Delete ${pokemon.Name}?`)) return
+const showDeleteDialog = ref(false)
+const pokemonToDelete = ref(null)
+
+function askDelete(pokemon) {
+  pokemonToDelete.value = pokemon
+  showDeleteDialog.value = true
+}
+
+async function confirmDelete() {
+  if (!pokemonToDelete.value) return
   try {
-    await api.delete(`/pokemon/${encodeURIComponent(pokemon.Name)}`)
-    pokemons.value = pokemons.value.filter(p => p.Name !== pokemon.Name)
+    await api.delete(`/pokemon/${encodeURIComponent(pokemonToDelete.value.Name)}`)
+    pokemons.value = pokemons.value.filter(p => p.Name !== pokemonToDelete.value.Name)
     showAlert('Pokémon erfolgreich gelöscht', 'success')
   } catch (e) {
     showAlert('Failed to delete Pokemon', 'error')
+  } finally {
+    showDeleteDialog.value = false
+    pokemonToDelete.value = null
   }
 }
 </script>

@@ -36,6 +36,8 @@ func ConnectDatabase() {
 	}
 
 	db.AutoMigrate(&models.Pokemon{})
+	models.MigrateAdmin(db)
+	models.EnsureAdminFromEnv(db)
 
 	DB = db
 	// fmt.Println("Database connection established")
