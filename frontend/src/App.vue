@@ -9,11 +9,21 @@
           style="max-width: 200px; margin: 0 auto; pointer-events: auto;"
         />
       </div>
-      <div style="margin-left: auto; display: flex; align-items: center; z-index: 1;">
-        <v-btn text to="/">Home</v-btn>
-        <v-btn text to="/create">Create</v-btn>
-        <v-btn v-if="isAdmin" text @click="logout">Logout (Admin)</v-btn>
+      <div style="margin-left: auto; display: flex; align-items: center; z-index: 1; gap: 1rem;">
+        <v-btn text to="/">{{ $t('app.home') }}</v-btn>
+        <v-btn text to="/create">{{ $t('app.create') }}</v-btn>
+        <v-btn v-if="isAdmin" text @click="logout">{{ $t('app.logout') }}</v-btn>
         <AdminLogin v-else />
+        <v-select
+          v-model="currentLocale"
+          :items="locales"
+          item-title="label"
+          item-value="code"
+          dense
+          hide-details
+          style="width: 120px; min-width: 100px;"
+          variant="outlined"
+        />
       </div>
     </v-app-bar>
 
@@ -29,12 +39,24 @@
 import AdminLogin from './components/AdminLogin.vue'
 import AdminSetPassword from './components/AdminSetPassword.vue'
 import { useAppStore } from './stores/app'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { isAdminPasswordSet } from './services/admin'
+import { useI18n } from 'vue-i18n'
 
 const appStore = useAppStore()
 const isAdmin = computed(() => appStore.isAdmin)
 const showSetPassword = ref(false)
+
+const { locale } = useI18n()
+const locales = [
+  { code: 'en', label: 'English' },
+  { code: 'de', label: 'Deutsch' }
+]
+const currentLocale = ref(locale.value)
+
+watch(currentLocale, (val) => {
+  locale.value = val
+})
 
 onMounted(async () => {
   try {

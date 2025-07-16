@@ -1,0 +1,41 @@
+{
+  "app": {
+    "home": "Home",
+    "create": "Create",
+    "logout": "Logout (Admin)",
+    "search": "Search Pokémon",
+    "found": "Pokémon found",
+    "total": "Total",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirmDelete": "Confirm Deletion",
+    "deleteText": "Do you really want to delete the Pokémon <b>{name}</b>?"
+  },
+  "form": {
+    "name": "Name",
+    "types": "Types (comma separated, e.g. Fire, Ground)",
+    "pokedexEntry": "Pokédex Entry",
+    "uploadPicture": "Upload Picture",
+    "appearance": "Appearance",
+    "attacks": "Attacks (comma separated, e.g. Fire, Ground)",
+    "ability": "Ability",
+    "height": "Size in Meter",
+    "weight": "Weight in Kilograms",
+    "category": "Category",
+    "createBtn": "Create Pokémon",
+    "success": "Successfully created Pokémon",
+    "errorImage": "Please select an image file.",
+    "errorCreate": "Could not create Pokémon: {error}",
+    "errorUnexpected": "An unexpected error occurred while creating the Pokémon."
+  },
+  "card": {
+    "ability": "Ability",
+    "height": "Height",
+    "weight": "Weight",
+    "pokedexEntry": "Pokédex Entry",
+    "appearance": "Appearance",
+    "attacks": "Attacks",
+    "category": "Category",
+    "deleteTitle": "Delete Pokémon"
+  }
+}

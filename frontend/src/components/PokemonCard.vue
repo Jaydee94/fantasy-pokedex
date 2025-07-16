@@ -3,12 +3,13 @@
     <img
       alt="Pokemon image"
       :src="`data:image/png;base64,${pokemon.ImageBase64}`"
-      style="display: block; margin: 0 auto; max-width: 100%; max-height: 250px; object-fit: contain;"
+      class="pokemon-image-preview"
+      @click="previewImage"
     />
 
     <v-card-title class="d-flex flex-column">
-      <span class="text-h6">{{ pokemon.Name }}</span>
-      <span class="text-subtitle-2 text-grey">{{ pokemon.Category }}</span>
+      <span class="text-h6" style="text-align: center; width: 100%; display: block;">{{ pokemon.Name }}</span>
+      <span class="text-subtitle-2 text-grey">{{ $t('card.category') }}: {{ pokemon.Category }}</span>
     </v-card-title>
 
     <v-card-subtitle>
@@ -40,7 +41,7 @@
         color="red"
         variant="text"
         @click="onDelete"
-        title="Delete Pokémon"
+        :title="$t('card.deleteTitle')"
       >
         <v-icon>mdi-delete</v-icon>
       </v-btn>
@@ -53,32 +54,32 @@
         <v-card-text>
           <v-list dense>
             <v-list-item>
-              <v-list-item-title class="font-weight-bold">Ability:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.ability') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Ability }}</v-list-item-subtitle>
             </v-list-item>
 
             <v-list-item>
-              <v-list-item-title class="font-weight-bold">Height:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.height') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">{{ pokemon.HeightM }} m</v-list-item-subtitle>
             </v-list-item>
 
             <v-list-item>
-              <v-list-item-title class="font-weight-bold">Weight:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.weight') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">{{ pokemon.WeightKg }} kg</v-list-item-subtitle>
             </v-list-item>
 
             <v-list-item>
-              <v-list-item-title class="font-weight-bold">Pokédex Entry:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.pokedexEntry') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">{{ pokemon.PokedexEntry }}</v-list-item-subtitle>
             </v-list-item>
 
             <v-list-item v-if="pokemon.Appearance">
-              <v-list-item-title class="font-weight-bold">Appearance:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.appearance') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Appearance }}</v-list-item-subtitle>
             </v-list-item>
 
             <v-list-item v-if="pokemon.Attacks?.length">
-              <v-list-item-title class="font-weight-bold">Attacks:</v-list-item-title>
+              <v-list-item-title class="font-weight-bold">{{ $t('card.attacks') }}:</v-list-item-title>
               <v-list-item-subtitle class="no-ellipsis">
                 <v-chip
                   v-for="attack in pokemon.Attacks"
@@ -179,13 +180,16 @@ function attackIcon(attack) {
 }
 
 const props = defineProps(['pokemon'])
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'preview-image'])
 const expanded = ref(false)
 const appStore = useAppStore()
 const isAdmin = computed(() => appStore.isAdmin)
 
 function onDelete() {
   emit('delete', props.pokemon)
+}
+function previewImage() {
+  emit('preview-image', `data:image/png;base64,${props.pokemon.ImageBase64}`)
 }
 </script>
 
@@ -197,5 +201,20 @@ function onDelete() {
   max-height: none !important;
   display: block !important;
   word-break: break-word !important;
+}
+/* ...existing code... */
+.pokemon-image-preview {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.pokemon-image-preview:hover {
+  box-shadow: 0 0 0 4px #356abc55, 0 2px 16px rgba(0,0,0,0.15);
+  transform: scale(1.04);
+  filter: brightness(1.08);
 }
 </style>

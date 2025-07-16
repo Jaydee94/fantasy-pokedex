@@ -16,28 +16,28 @@ func createDummyPokemon() {
 	imagePath := "./assets/testly.png"
 	imageData, err := os.ReadFile(imagePath)
 	if err != nil {
-		log.Printf("Fehler beim Lesen des Bildes: %v", err)
+		log.Printf("Error reading image: %v", err)
 		return
 	}
 
 	dummyPokemon := models.Pokemon{
 		Name:         "Testly",
-		Types:        []string{"Elektro", "Psycho"},
-		PokedexEntry: "Testly ist bekannt dafür, in jeder Umgebung sofort Schwachstellen und Muster zu erkennen. Es liebt es, neue Dinge zu testen – ob Maschinen, Beeren oder sogar Trainer. Man sagt, es kann durch bloßes Anschauen die Strategie seines Gegners durchschauen.",
+		Types:        []string{"Electric", "Psychic"},
+		PokedexEntry: "Testly is known for instantly recognizing weaknesses and patterns in any environment. It loves to test new things – whether machines, berries, or even trainers. It is said that it can see through its opponent's strategy just by looking.",
 		ImageData:    imageData,
-		Appearance:   "Ein kleines, energiegeladenes Pokémon mit technischen Details, leuchtenden Augen und einem kleinen Bildschirm auf der Stirn.",
+		Appearance:   "A small, energetic Pokémon with technical details, glowing eyes, and a small screen on its forehead.",
 		Attacks: []string{
 			"Tackle",
-			"Ladungsstoß",
-			"Scannerblick",
-			"Psychokinese",
-			"Trickbetrug",
-			"Testschock",
+			"Spark",
+			"Scan Gaze",
+			"Psychokinesis",
+			"Trickery",
+			"Test Shock",
 		},
-		Ability:  "Analyser (verstärkt Attacken, wenn Testly als letztes angreift); Versteckte Fähigkeit: Datenrausch (steigert Spezial-Angriff bei jedem besiegten Gegner)",
+		Ability:  "Analyzer (boosts moves when Testly moves last); Hidden Ability: Data Surge (raises Special Attack with each defeated opponent)",
 		HeightM:  0.8,
 		WeightKg: 12.5,
-		Category: "Analyse-Pokémon",
+		Category: "Analysis Pokémon",
 	}
 
 	result := config.DB.Create(&dummyPokemon)

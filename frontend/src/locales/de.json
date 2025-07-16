@@ -1,0 +1,41 @@
+{
+  "app": {
+    "home": "Startseite",
+    "create": "Erstellen",
+    "logout": "Abmelden (Admin)",
+    "search": "Pokémon suchen",
+    "found": "Gefundene Pokémon",
+    "total": "Gesamt",
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "confirmDelete": "Löschen bestätigen",
+    "deleteText": "Möchten Sie das Pokémon <b>{name}</b> wirklich löschen?"
+  },
+  "form": {
+    "name": "Name",
+    "types": "Typen (durch Komma getrennt, z.B. Feuer, Boden)",
+    "pokedexEntry": "Pokédex-Eintrag",
+    "uploadPicture": "Bild hochladen",
+    "appearance": "Aussehen",
+    "attacks": "Attacken (durch Komma getrennt, z.B. Feuer, Boden)",
+    "ability": "Fähigkeit",
+    "height": "Größe in Meter",
+    "weight": "Gewicht in Kilogramm",
+    "category": "Kategorie",
+    "createBtn": "Pokémon erstellen",
+    "success": "Pokémon erfolgreich erstellt",
+    "errorImage": "Bitte wählen Sie eine Bilddatei aus.",
+    "errorCreate": "Pokémon konnte nicht erstellt werden: {error}",
+    "errorUnexpected": "Beim Erstellen des Pokémon ist ein unerwarteter Fehler aufgetreten."
+  },
+  "card": {
+    "ability": "Fähigkeit",
+    "height": "Größe",
+    "weight": "Gewicht",
+    "pokedexEntry": "Pokédex-Eintrag",
+    "appearance": "Aussehen",
+    "attacks": "Attacken",
+    "category": "Kategorie",
+    "deleteTitle": "Pokémon löschen"
+  }
+}

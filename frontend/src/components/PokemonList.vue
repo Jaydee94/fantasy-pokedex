@@ -53,16 +53,19 @@
         md="4"
         sm="6"
       >
-        <PokemonCard :pokemon="pokemon" @delete="askDelete" />
+        <PokemonCard :pokemon="pokemon" @delete="askDelete" @preview-image="showImagePreview" />
       </v-col>
     </v-row>
+    <ImageModal v-if="previewImage" :image="previewImage" @close="previewImage = ''" />
   </div>
+<!-- ...existing code... -->
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import api from '../services/api'
 import PokemonCard from './PokemonCard.vue'
+import ImageModal from './ImageModal.vue'
 
 const pokemons = ref([])
 const loading = ref(false)
@@ -133,4 +136,9 @@ const filteredPokemons = computed(() => {
     (p.Attacks && p.Attacks.some(a => a.toLowerCase().includes(term)))
   )
 })
+
+const previewImage = ref('')
+function showImagePreview(image) {
+  previewImage.value = image
+}
 </script>
