@@ -8,7 +8,6 @@
     />
 
     <v-textarea v-model="form.PokedexEntry" label="Pokédex-Entry" />
-
     <!-- Neuer Upload Input -->
     <v-file-input
       v-model="form.ImageFile"
@@ -44,12 +43,28 @@
     <v-btn class="mt-2" color="primary" :disabled="loading" type="submit">
       Pokémon erstellen
     </v-btn>
+
+    <v-alert
+      v-if="alertMsg"
+      :type="alertType"
+      dense
+      class="mt-4"
+      border="start"
+      transition="fade-transition"
+    >
+      {{ alertMsg }}
+    </v-alert>
   </v-form>
 </template>
 
 <script setup>
   import { reactive, ref } from 'vue'
   import api from '../services/api'
+  import { nextTick } from 'vue'
+
+
+  const alertMsg = ref('')
+  const alertType = ref('success')
 
   const form = reactive({
     Name: '',
@@ -68,7 +83,7 @@
 
   const submit = async () => {
     if (!form.ImageFile) {
-      alert('Please select an image file.')
+      showAlert('Please select an image file.', 'error')
       return
     }
 
@@ -91,19 +106,27 @@
       loading.value = true
       try {
         await api.post('/pokemon', payload)
-        alert('Successfully created pokemon')
+        showAlert('Successfully created pokemon', 'success')
         for (const key of Object.keys(form)) {
           form[key] = key === 'ImageFile' ? null : ''
         }
       } catch (error) {
-        console.error('Error creating pokemon', error)
-        alert('Error creating pokemon')
+        console.error(error)
+        showAlert('Error creating pokemon', 'error')
       } finally {
         loading.value = false
       }
     })
 
     reader.readAsDataURL(form.ImageFile)
+  }
+
+  function showAlert(msg, type = 'success') {
+    alertMsg.value = msg
+    alertType.value = type
+    setTimeout(() => {
+      alertMsg.value = ''
+    }, 2000)
   }
 
 </script>

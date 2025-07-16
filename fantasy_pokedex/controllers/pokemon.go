@@ -9,6 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// DeletePokemon deletes a Pokemon by name
+func DeletePokemon(c *gin.Context) {
+	name := c.Param("name")
+	var pokemon models.Pokemon
+	if err := config.DB.First(&pokemon, "name = ?", name).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pokemon not found"})
+		return
+	}
+	if err := config.DB.Delete(&pokemon).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete Pokemon"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Pokemon deleted successfully"})
+}
+
 type CreatePokemonInput struct {
 	Name         string   `json:"Name"`
 	Types        []string `json:"Types"`

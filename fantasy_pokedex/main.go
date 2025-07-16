@@ -13,8 +13,7 @@ import (
 )
 
 func createDummyPokemon() {
-	// Bild lokal laden (z.B. ./assets/testmon.png)
-	imagePath := "./assets/dummy.png"
+	imagePath := "./assets/testly.png"
 	imageData, err := os.ReadFile(imagePath)
 	if err != nil {
 		log.Printf("Fehler beim Lesen des Bildes: %v", err)
@@ -22,16 +21,23 @@ func createDummyPokemon() {
 	}
 
 	dummyPokemon := models.Pokemon{
-		Name:         "Testmon",
-		Types:        []string{"Fire", "Flying"},
-		PokedexEntry: "Testmon is a fictional Pokemon used for testing purposes.",
+		Name:         "Testly",
+		Types:        []string{"Elektro", "Psycho"},
+		PokedexEntry: "Testly ist bekannt dafür, in jeder Umgebung sofort Schwachstellen und Muster zu erkennen. Es liebt es, neue Dinge zu testen – ob Maschinen, Beeren oder sogar Trainer. Man sagt, es kann durch bloßes Anschauen die Strategie seines Gegners durchschauen.",
 		ImageData:    imageData,
-		Appearance:   "A small, red, dragon-like creature with wings.",
-		Attacks:      []string{"Flame Burst", "Wing Attack"},
-		Ability:      "Test Ability",
-		HeightM:      1.0,
-		WeightKg:     10.0,
-		Category:     "Test",
+		Appearance:   "Ein kleines, energiegeladenes Pokémon mit technischen Details, leuchtenden Augen und einem kleinen Bildschirm auf der Stirn.",
+		Attacks: []string{
+			"Tackle",
+			"Ladungsstoß",
+			"Scannerblick",
+			"Psychokinese",
+			"Trickbetrug",
+			"Testschock",
+		},
+		Ability:  "Analyser (verstärkt Attacken, wenn Testly als letztes angreift); Versteckte Fähigkeit: Datenrausch (steigert Spezial-Angriff bei jedem besiegten Gegner)",
+		HeightM:  0.8,
+		WeightKg: 12.5,
+		Category: "Analyse-Pokémon",
 	}
 
 	result := config.DB.Create(&dummyPokemon)
@@ -51,7 +57,6 @@ func main() {
 
 	r := gin.Default()
 
-	// 👉 CORS konfigurieren
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
