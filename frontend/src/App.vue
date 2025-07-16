@@ -5,7 +5,7 @@
       <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;">
         <v-img
           src="@/assets/fantasy-pokedex-logo.png"
-          max-height="100"
+          max-height="130"
           style="max-width: 200px; margin: 0 auto; pointer-events: auto;"
         />
       </div>

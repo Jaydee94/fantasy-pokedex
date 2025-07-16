@@ -22,6 +22,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:yourpassword@db:5432/fantasy_pokedex?sslmode=disable
       GIN_MODE: debug
+      ADMIN_PASSWORD: test123
     ports:
       - "8080:8080"
     depends_on:
