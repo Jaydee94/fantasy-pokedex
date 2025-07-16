@@ -33,10 +33,18 @@ const appStore = useAppStore()
 
 const error = computed(() => appStore.adminError)
 
-function handleLogin() {
-  if (appStore.login(password.value)) {
-    dialog.value = false
-    password.value = ''
+async function handleLogin() {
+  try {
+    const result = await appStore.login(password.value)
+    if (result) {
+      dialog.value = false
+      password.value = ''
+    }
+  } catch (error) {
+    // Log technical error for developers
+    console.error(error)
+    // Show user-friendly error message
+    alert('An unexpected error occurred during login. Please try again.')
   }
 }
 </script>

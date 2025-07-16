@@ -54,7 +54,10 @@ async function setPassword() {
       dialog.value = false
     }, 1500)
   } catch (e) {
-    error.value = e.response?.data?.error || 'Fehler beim Setzen des Passworts.'
+    // Log technical error for developers
+    console.error(e)
+    // Show user-friendly error message
+    error.value = e.response?.data?.error || 'An unexpected error occurred while setting the password.'
   }
 }
 

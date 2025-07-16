@@ -89,7 +89,7 @@
 
     const reader = new FileReader()
     reader.addEventListener('load', async () => {
-      const base64 = reader.result.split(',')[1] // Nur der Base64-Teil
+      const base64 = reader.result.split(',')[1] // Only the base64 part
       const payload = {
         Name: form.Name,
         Types: form.TypesString.split(',').map(t => t.trim()),
@@ -111,8 +111,14 @@
           form[key] = key === 'ImageFile' ? null : ''
         }
       } catch (error) {
+        // Log technical error for developers
         console.error(error)
-        showAlert('Error creating pokemon', 'error')
+        // Show user-friendly error message
+        if (error.response && error.response.data && error.response.data.error) {
+          showAlert('Could not create Pokémon: ' + error.response.data.error, 'error')
+        } else {
+          showAlert('An unexpected error occurred while creating the Pokémon.', 'error')
+        }
       } finally {
         loading.value = false
       }

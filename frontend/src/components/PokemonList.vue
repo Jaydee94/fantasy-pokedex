@@ -46,9 +46,15 @@ import PokemonCard from './PokemonCard.vue'
 
 const pokemons = ref([])
 
+
 async function fetchPokemons() {
-  const res = await api.get('/pokemon')
-  pokemons.value = res.data
+  try {
+    const res = await api.get('/pokemon')
+    pokemons.value = res.data
+  } catch (error) {
+    console.error(error)
+    showAlert('Could not load Pokémon list. Please try again later.', 'error')
+  }
 }
 
 onMounted(fetchPokemons)
@@ -77,9 +83,14 @@ async function confirmDelete() {
   try {
     await api.delete(`/pokemon/${encodeURIComponent(pokemonToDelete.value.Name)}`)
     pokemons.value = pokemons.value.filter(p => p.Name !== pokemonToDelete.value.Name)
-    showAlert('Pokémon erfolgreich gelöscht', 'success')
-  } catch (e) {
-    showAlert('Failed to delete Pokemon', 'error')
+    showAlert('Pokémon deleted successfully', 'success')
+  } catch (error) {
+    console.error(error)
+    if (error.response && error.response.data && error.response.data.error) {
+      showAlert('Could not delete Pokémon: ' + error.response.data.error, 'error')
+    } else {
+      showAlert('An unexpected error occurred while deleting the Pokémon.', 'error')
+    }
   } finally {
     showDeleteDialog.value = false
     pokemonToDelete.value = null

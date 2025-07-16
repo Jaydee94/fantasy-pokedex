@@ -40,5 +40,4 @@ func ConnectDatabase() {
 	models.EnsureAdminFromEnv(db)
 
 	DB = db
-	// fmt.Println("Database connection established")
 }
