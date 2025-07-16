@@ -22,7 +22,7 @@
 
     <v-text-field
       v-model="form.AttacksString"
-      label="AAttacks (comma separated, e.g. Fire, Ground)"
+      label="Attacks (comma separated, e.g. Fire, Ground)"
     />
 
     <v-text-field v-model="form.Ability" label="Ability" />
