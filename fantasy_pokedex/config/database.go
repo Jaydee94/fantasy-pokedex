@@ -35,7 +35,7 @@ func ConnectDatabase() {
 		time.Sleep(2 * time.Second)
 	}
 
-	db.AutoMigrate(&models.Pokemon{})
+	db.AutoMigrate(&models.Pokemon{}) // will migrate new stats fields
 	models.MigrateAdmin(db)
 	models.EnsureAdminFromEnv(db)
 

@@ -37,7 +37,18 @@
       step="0.01"
       type="number"
     />
+
     <v-text-field v-model="form.Category" :label="$t('form.category')" />
+
+    <v-divider class="my-2" />
+    <div class="d-flex flex-wrap gap-2">
+      <v-text-field v-model="form.HP" label="HP" type="number" min="0" max="255" style="max-width: 120px" />
+      <v-text-field v-model="form.Attack" label="Attack" type="number" min="0" max="255" style="max-width: 120px" />
+      <v-text-field v-model="form.Defense" label="Defense" type="number" min="0" max="255" style="max-width: 120px" />
+      <v-text-field v-model="form.Speed" label="Speed" type="number" min="0" max="255" style="max-width: 120px" />
+      <v-text-field v-model="form.SpAttack" label="Sp. Atk" type="number" min="0" max="255" style="max-width: 120px" />
+      <v-text-field v-model="form.SpDefense" label="Sp. Def" type="number" min="0" max="255" style="max-width: 120px" />
+    </div>
 
     <v-btn class="mt-2" color="primary" :disabled="loading" type="submit">
       <template v-if="loading">
@@ -88,6 +99,12 @@ const form = reactive({
   WeightKg: null,
   Category: '',
   ImageFile: null,
+  HP: '',
+  Attack: '',
+  Defense: '',
+  Speed: '',
+  SpAttack: '',
+  SpDefense: '',
 })
 
 const loading = ref(false)
@@ -112,6 +129,12 @@ const submit = async () => {
       WeightKg: Number.parseFloat(form.WeightKg),
       Category: form.Category,
       ImageData: base64,
+      HP: Number.parseInt(form.HP) || 0,
+      Attack: Number.parseInt(form.Attack) || 0,
+      Defense: Number.parseInt(form.Defense) || 0,
+      Speed: Number.parseInt(form.Speed) || 0,
+      SpAttack: Number.parseInt(form.SpAttack) || 0,
+      SpDefense: Number.parseInt(form.SpDefense) || 0,
     }
 
     loading.value = true

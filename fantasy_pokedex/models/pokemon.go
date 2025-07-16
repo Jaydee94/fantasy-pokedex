@@ -15,4 +15,12 @@ type Pokemon struct {
 	HeightM      float64
 	WeightKg     float64
 	Category     string
+
+	// Stats fields
+	HP        int
+	Attack    int
+	Defense   int
+	Speed     int
+	SpAttack  int
+	SpDefense int
 }

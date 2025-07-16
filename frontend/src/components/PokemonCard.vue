@@ -1,10 +1,11 @@
 <template>
-  <v-card class="mx-auto my-4" max-width="500">
+  <div style="position: relative;">
+    <v-card class="mx-auto my-4" max-width="500">
     <img
       alt="Pokemon image"
       :src="`data:image/png;base64,${pokemon.ImageBase64}`"
       class="pokemon-image-preview"
-      @click="previewImage"
+      @click="showImageModal = true"
     />
 
     <v-card-title class="d-flex flex-column">
@@ -26,14 +27,23 @@
       </v-chip>
     </v-card-subtitle>
 
-    <v-card-actions>
-      <v-spacer />
+    <v-card-actions style="justify-content: center;">
       <v-btn
         icon
         variant="text"
         @click="expanded = !expanded"
+        style="margin: 0 8px;"
       >
         <v-icon>{{ expanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        color="primary"
+        variant="text"
+        @click="showStatsModal = true"
+        :title="$t('card.showStats')"
+      >
+        <v-icon>mdi-radar</v-icon>
       </v-btn>
       <v-btn
         v-if="isAdmin"
@@ -42,68 +52,106 @@
         variant="text"
         @click="onDelete"
         :title="$t('card.deleteTitle')"
+        style="margin: 0 8px;"
       >
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </v-card-actions>
 
     <v-expand-transition>
-      <div v-show="expanded">
-        <v-divider class="my-2" />
-
-        <v-card-text>
-          <v-list dense>
-            <v-list-item>
-              <v-list-item-title class="font-weight-bold">{{ $t('card.ability') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Ability }}</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item>
-              <v-list-item-title class="font-weight-bold">{{ $t('card.height') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">{{ pokemon.HeightM }} m</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item>
-              <v-list-item-title class="font-weight-bold">{{ $t('card.weight') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">{{ pokemon.WeightKg }} kg</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item>
-              <v-list-item-title class="font-weight-bold">{{ $t('card.pokedexEntry') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">{{ pokemon.PokedexEntry }}</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item v-if="pokemon.Appearance">
-              <v-list-item-title class="font-weight-bold">{{ $t('card.appearance') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Appearance }}</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item v-if="pokemon.Attacks?.length">
-              <v-list-item-title class="font-weight-bold">{{ $t('card.attacks') }}:</v-list-item-title>
-              <v-list-item-subtitle class="no-ellipsis">
-                <v-chip
-                  v-for="attack in pokemon.Attacks"
-                  :key="attack"
-                  class="ma-1 no-ellipsis"
-                  :color="attackColor(attack)"
-                  small
-                  text-color="white"
-                  style="white-space: normal; overflow: visible; text-overflow: unset;"
-                >
-                  <v-icon start size="small">{{ attackIcon(attack) }}</v-icon>
-                  {{ attack }}
-                </v-chip>
-              </v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </div>
+      <template v-if="expanded">
+        <div>
+          <v-divider class="my-2" />
+          <v-card-text>
+            <v-list dense>
+              <v-list-item>
+                <v-list-item-title class="font-weight-bold">{{ $t('card.ability') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Ability }}</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title class="font-weight-bold">{{ $t('card.height') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">{{ pokemon.HeightM }} m</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title class="font-weight-bold">{{ $t('card.weight') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">{{ pokemon.WeightKg }} kg</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title class="font-weight-bold">{{ $t('card.pokedexEntry') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">{{ pokemon.PokedexEntry }}</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item v-if="pokemon.Appearance">
+                <v-list-item-title class="font-weight-bold">{{ $t('card.appearance') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">{{ pokemon.Appearance }}</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item v-if="pokemon.Attacks?.length">
+                <v-list-item-title class="font-weight-bold">{{ $t('card.attacks') }}:</v-list-item-title>
+                <v-list-item-subtitle class="no-ellipsis">
+                  <v-chip
+                    v-for="attack in pokemon.Attacks"
+                    :key="attack"
+                    class="ma-1 no-ellipsis"
+                    :color="attackColor(attack)"
+                    small
+                    text-color="white"
+                    style="white-space: normal; overflow: visible; text-overflow: unset;"
+                  >
+                    <v-icon start size="small">{{ attackIcon(attack) }}</v-icon>
+                    {{ attack }}
+                  </v-chip>
+                </v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </div>
+      </template>
     </v-expand-transition>
-  </v-card>
+    </v-card>
+    <v-dialog v-model="showImageModal" max-width="600" persistent>
+      <v-card>
+        <v-card-title class="text-h6 font-weight-bold" style="text-align:center;">{{ pokemon.Name }}</v-card-title>
+        <v-card-text style="display:flex; justify-content:center; align-items:center;">
+          <img
+            :src="`data:image/png;base64,${pokemon.ImageBase64}`"
+            alt="Pokemon image large"
+            style="max-width:100%; max-height:400px; object-fit:contain;"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="showImageModal = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showStatsModal" max-width="600" persistent>
+      <v-card>
+        <v-card-title class="text-h6 font-weight-bold" style="text-align:center;">Stats for {{ pokemon.Name }}</v-card-title>
+        <v-card-text style="display:flex; justify-content:center; align-items:center; min-height:400px;">
+          <div style="width:350px; height:350px; display:flex; justify-content:center; align-items:center;">
+            <PokemonStatsChart :stats="extractStats(pokemon) || defaultStats" />
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="showStatsModal = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup>
+// Fallback stats to prevent undefined errors in chart
+const defaultStats = {
+  HP: 0,
+  Attack: 0,
+  Defense: 0,
+  Speed: 0,
+  SpAttack: 0,
+  SpDefense: 0,
+}
 import { ref, computed } from 'vue'
+import PokemonStatsChart from './PokemonStatsChart.vue'
 import { useAppStore } from '../stores/app'
 
 const typeColorMap = {
@@ -182,14 +230,30 @@ function attackIcon(attack) {
 const props = defineProps(['pokemon'])
 const emit = defineEmits(['delete', 'preview-image'])
 const expanded = ref(false)
+const showStatsModal = ref(false)
+const showImageModal = ref(false)
 const appStore = useAppStore()
 const isAdmin = computed(() => appStore.isAdmin)
+
+
+// Helper to extract stats from the pokemon object
+function extractStats(p) {
+  return {
+    HP: p.HP ?? 0,
+    Attack: p.Attack ?? 0,
+    Defense: p.Defense ?? 0,
+    Speed: p.Speed ?? 0,
+    SpAttack: p.SpAttack ?? 0,
+    SpDefense: p.SpDefense ?? 0,
+  }
+}
 
 function onDelete() {
   emit('delete', props.pokemon)
 }
 function previewImage() {
   emit('preview-image', `data:image/png;base64,${props.pokemon.ImageBase64}`)
+  showImageModal.value = true
 }
 </script>
 

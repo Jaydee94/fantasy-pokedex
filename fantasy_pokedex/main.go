@@ -34,10 +34,16 @@ func createDummyPokemon() {
 			"Trickery",
 			"Test Shock",
 		},
-		Ability:  "Analyzer (boosts moves when Testly moves last); Hidden Ability: Data Surge (raises Special Attack with each defeated opponent)",
-		HeightM:  0.8,
-		WeightKg: 12.5,
-		Category: "Analysis Pokémon",
+		Ability:   "Analyzer (boosts moves when Testly moves last); Hidden Ability: Data Surge (raises Special Attack with each defeated opponent)",
+		HeightM:   0.8,
+		WeightKg:  12.5,
+		Category:  "Analysis Pokémon",
+		HP:        80,
+		Attack:    90,
+		Defense:   70,
+		Speed:     100,
+		SpAttack:  110,
+		SpDefense: 85,
 	}
 
 	result := config.DB.Create(&dummyPokemon)

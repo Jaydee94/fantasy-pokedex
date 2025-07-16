@@ -35,6 +35,12 @@ type CreatePokemonInput struct {
 	HeightM      float64  `json:"HeightM"`
 	WeightKg     float64  `json:"WeightKg"`
 	Category     string   `json:"Category"`
+	HP           int      `json:"HP"`
+	Attack       int      `json:"Attack"`
+	Defense      int      `json:"Defense"`
+	Speed        int      `json:"Speed"`
+	SpAttack     int      `json:"SpAttack"`
+	SpDefense    int      `json:"SpDefense"`
 }
 
 type PokemonResponse struct {
@@ -49,6 +55,12 @@ type PokemonResponse struct {
 	HeightM      float64  `json:"HeightM"`
 	WeightKg     float64  `json:"WeightKg"`
 	Category     string   `json:"Category"`
+	HP           int      `json:"HP"`
+	Attack       int      `json:"Attack"`
+	Defense      int      `json:"Defense"`
+	Speed        int      `json:"Speed"`
+	SpAttack     int      `json:"SpAttack"`
+	SpDefense    int      `json:"SpDefense"`
 }
 
 func CreatePokemon(c *gin.Context) {
@@ -75,6 +87,12 @@ func CreatePokemon(c *gin.Context) {
 		HeightM:      input.HeightM,
 		WeightKg:     input.WeightKg,
 		Category:     input.Category,
+		HP:           input.HP,
+		Attack:       input.Attack,
+		Defense:      input.Defense,
+		Speed:        input.Speed,
+		SpAttack:     input.SpAttack,
+		SpDefense:    input.SpDefense,
 	}
 
 	if err := config.DB.Create(&pokemon).Error; err != nil {
@@ -97,6 +115,12 @@ func toPokemonResponse(p models.Pokemon) PokemonResponse {
 		HeightM:      p.HeightM,
 		WeightKg:     p.WeightKg,
 		Category:     p.Category,
+		HP:           p.HP,
+		Attack:       p.Attack,
+		Defense:      p.Defense,
+		Speed:        p.Speed,
+		SpAttack:     p.SpAttack,
+		SpDefense:    p.SpDefense,
 	}
 }
 
