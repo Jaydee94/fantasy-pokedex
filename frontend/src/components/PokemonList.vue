@@ -31,11 +31,18 @@
       </v-card>
     </v-dialog>
 
+    <v-text-field
+      v-model="search"
+      label="Search Pokémon"
+      prepend-inner-icon="mdi-magnify"
+      class="mb-4"
+      clearable
+    />
     <v-row>
       <v-col
-        v-for="pokemon in pokemons"
+        v-for="pokemon in filteredPokemons"
         :key="pokemon.Name"
-        cols="12"
+        cols="6"
         md="4"
         sm="6"
       >
@@ -46,7 +53,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../services/api'
 import PokemonCard from './PokemonCard.vue'
 
@@ -107,4 +114,16 @@ async function confirmDelete() {
     loading.value = false
   }
 }
+
+const search = ref('')
+
+const filteredPokemons = computed(() => {
+  if (!search.value) return pokemons.value
+  const term = search.value.toLowerCase()
+  return pokemons.value.filter(p =>
+    p.Name.toLowerCase().includes(term) ||
+    (p.Types && p.Types.some(t => t.toLowerCase().includes(term))) ||
+    (p.Attacks && p.Attacks.some(a => a.toLowerCase().includes(term)))
+  )
+})
 </script>
