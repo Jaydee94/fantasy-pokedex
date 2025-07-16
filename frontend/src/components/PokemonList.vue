@@ -10,6 +10,12 @@
     >
       {{ alertMsg }}
     </v-alert>
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="primary"
+      class="mb-4"
+    />
 
     <v-dialog v-model="showDeleteDialog" max-width="400">
       <v-card>
@@ -45,15 +51,18 @@ import api from '../services/api'
 import PokemonCard from './PokemonCard.vue'
 
 const pokemons = ref([])
-
+const loading = ref(false)
 
 async function fetchPokemons() {
+  loading.value = true
   try {
     const res = await api.get('/pokemon')
     pokemons.value = res.data
   } catch (error) {
     console.error(error)
     showAlert('Could not load Pokémon list. Please try again later.', 'error')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -80,6 +89,7 @@ function askDelete(pokemon) {
 
 async function confirmDelete() {
   if (!pokemonToDelete.value) return
+  loading.value = true
   try {
     await api.delete(`/pokemon/${encodeURIComponent(pokemonToDelete.value.Name)}`)
     pokemons.value = pokemons.value.filter(p => p.Name !== pokemonToDelete.value.Name)
@@ -94,6 +104,7 @@ async function confirmDelete() {
   } finally {
     showDeleteDialog.value = false
     pokemonToDelete.value = null
+    loading.value = false
   }
 }
 </script>

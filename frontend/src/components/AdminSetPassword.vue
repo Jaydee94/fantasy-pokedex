@@ -17,10 +17,16 @@
         />
         <v-alert v-if="error" type="error" dense>{{ error }}</v-alert>
         <v-alert v-if="success" type="success" dense>{{ success }}</v-alert>
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          color="primary"
+          class="mb-2 mt-2"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" @click="setPassword">Setzen</v-btn>
+        <v-btn color="primary" @click="setPassword" :loading="loading">Setzen</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -35,6 +41,7 @@ const password = ref('')
 const passwordRepeat = ref('')
 const error = ref('')
 const success = ref('')
+const loading = ref(false)
 
 async function setPassword() {
   error.value = ''
@@ -47,6 +54,7 @@ async function setPassword() {
     error.value = 'Passwörter stimmen nicht überein!'
     return
   }
+  loading.value = true
   try {
     await api.post('/admin/set-password', { password: password.value })
     success.value = 'Passwort erfolgreich gesetzt!'
@@ -58,6 +66,8 @@ async function setPassword() {
     console.error(e)
     // Show user-friendly error message
     error.value = e.response?.data?.error || 'An unexpected error occurred while setting the password.'
+  } finally {
+    loading.value = false
   }
 }
 

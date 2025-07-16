@@ -13,10 +13,16 @@
           @keyup.enter="handleLogin"
         />
         <v-alert v-if="error" type="error" dense>{{ error }}</v-alert>
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          color="primary"
+          class="mb-2 mt-2"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" @click="handleLogin">Login</v-btn>
+        <v-btn color="primary" @click="handleLogin" :loading="loading">Login</v-btn>
         <v-btn text @click="dialog = false">Cancel</v-btn>
       </v-card-actions>
     </v-card>
@@ -30,10 +36,12 @@ import { useAppStore } from '../stores/app'
 const dialog = ref(false)
 const password = ref('')
 const appStore = useAppStore()
+const loading = ref(false)
 
 const error = computed(() => appStore.adminError)
 
 async function handleLogin() {
+  loading.value = true
   try {
     const result = await appStore.login(password.value)
     if (result) {
@@ -45,6 +53,8 @@ async function handleLogin() {
     console.error(error)
     // Show user-friendly error message
     alert('An unexpected error occurred during login. Please try again.')
+  } finally {
+    loading.value = false
   }
 }
 </script>

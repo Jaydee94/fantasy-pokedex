@@ -41,8 +41,17 @@
     <v-text-field v-model="form.Category" label="Category" />
 
     <v-btn class="mt-2" color="primary" :disabled="loading" type="submit">
+      <template v-if="loading">
+        <v-progress-circular indeterminate size="20" color="white" class="mr-2" />
+      </template>
       Pokémon erstellen
     </v-btn>
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="primary"
+      class="mb-2"
+    />
 
     <v-alert
       v-if="alertMsg"
