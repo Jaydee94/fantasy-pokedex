@@ -19,14 +19,14 @@
 
     <v-dialog v-model="showDeleteDialog" max-width="400">
       <v-card>
-        <v-card-title>Löschen bestätigen</v-card-title>
+        <v-card-title>Confirm Deletion</v-card-title>
         <v-card-text>
-          Soll das Pokémon <b>{{ pokemonToDelete?.Name }}</b> wirklich gelöscht werden?
+          Do you really want to delete the Pokémon <b>{{ pokemonToDelete?.Name }}</b>?
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" @click="confirmDelete">Löschen</v-btn>
-          <v-btn text @click="showDeleteDialog = false">Abbrechen</v-btn>
+          <v-btn color="red" @click="confirmDelete">Delete</v-btn>
+          <v-btn text @click="showDeleteDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -38,6 +38,13 @@
       class="mb-4"
       clearable
     />
+
+    <div class="d-flex align-center mb-2" style="gap: 1rem">
+      <v-icon color="primary">mdi-counter</v-icon>
+      <span>Pokémon found: <b>{{ filteredPokemons.length }}</b></span>
+      <span v-if="filteredPokemons.length !== pokemons.length" class="text-grey">(Total: {{ pokemons.length }})</span>
+    </div>
+
     <v-row>
       <v-col
         v-for="pokemon in filteredPokemons"

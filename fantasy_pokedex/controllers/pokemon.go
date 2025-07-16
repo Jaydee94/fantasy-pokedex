@@ -60,7 +60,7 @@ func CreatePokemon(c *gin.Context) {
 
 	imageBytes, err := base64.StdEncoding.DecodeString(input.ImageData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bild konnte nicht dekodiert werden"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not decode image"})
 		return
 	}
 
@@ -78,7 +78,7 @@ func CreatePokemon(c *gin.Context) {
 	}
 
 	if err := config.DB.Create(&pokemon).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Fehler beim Speichern"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save Pokémon"})
 		return
 	}
 
