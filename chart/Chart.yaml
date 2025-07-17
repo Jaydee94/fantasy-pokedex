@@ -1,0 +1,20 @@
+apiVersion: v2
+name: fantasy-pokedex
+version: 0.1.0
+description: Helm chart for deploying Fantasy Pokedex (frontend + backend) and a Bitnami PostgreSQL database
+appVersion: "1.0"
+
+keywords:
+  - fantasy-pokedex
+  - helm
+  - postgresql
+  - bitnami
+
+maintainers:
+  - name: Jaydee94
+
+dependencies:
+  - name: postgresql
+    version: "16.7.19"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled

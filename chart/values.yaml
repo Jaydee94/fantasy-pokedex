@@ -1,0 +1,60 @@
+ingress:
+  enabled: false
+  host: fantasy-pokedex.local
+  path: /
+  pathType: Prefix
+  className: ""
+  annotations: {}
+  tls: false
+  tlsSecretName: ""
+# Default values for fantasy-pokedex Helm Chart
+
+frontend:
+  image:
+    repository: ghcr.io/jaydee94/fantasy-pokedex-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  env: {}
+
+backend:
+  image:
+    repository: ghcr.io/jaydee94/fantasy-pokedex-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    DB_HOST: fantasy-pokedex-postgresql
+    DB_PORT: "5432"
+    DB_USER: postgres
+    DB_PASS: postgres # If backend.secret.dbPassSecret is set, this is ignored
+    DB_NAME: fantasy_pokedex
+    ADMIN_PASSWORD: "" # If backend.secret.adminPasswordSecret is set, this is ignored
+  secret:
+    dbPassSecret: "" # Name of secret containing DB_PASS
+    adminPasswordSecret: "" # Name of secret containing ADMIN_PASSWORD
+
+postgresql:
+  enabled: true
+  auth:
+    username: postgres
+    password: postgres # If postgresql.secret.passwordSecret is set, this is ignored
+    database: fantasy_pokedex
+  secret:
+    passwordSecret: "" # Name of secret containing postgres password
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+  service:
+    port: 5432
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
