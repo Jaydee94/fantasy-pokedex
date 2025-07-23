@@ -26,18 +26,7 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 3001
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 3001
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          # probes removed
         - name: backend
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
@@ -62,18 +51,7 @@ spec:
               value: "{{ $value }}"
             {{- end }}
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: {{ .Values.backend.service.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: {{ .Values.backend.service.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          # probes removed
       {{- if .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}

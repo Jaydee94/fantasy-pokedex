@@ -1,28 +1,28 @@
 <template>
   <div class="modal-overlay" @click.self="close">
     <div class="modal-content">
-      <img :src="image" alt="Preview" />
+      <img alt="Preview" :src="image">
       <button class="close-btn" @click="close">&times;</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'ImageModal',
-  props: {
-    image: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['close'],
-  methods: {
-    close() {
-      this.$emit('close');
-    }
+  export default {
+    name: 'ImageModal',
+    props: {
+      image: {
+        type: String,
+        required: true,
+      },
+    },
+    emits: ['close'],
+    methods: {
+      close () {
+        this.$emit('close')
+      },
+    },
   }
-}
 </script>
 
 <style scoped>

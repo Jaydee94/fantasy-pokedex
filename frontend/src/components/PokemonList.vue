@@ -2,19 +2,19 @@
   <div>
     <v-alert
       v-if="alertMsg"
-      :type="alertType"
-      dense
-      class="mb-2"
       border="start"
+      class="mb-2"
+      dense
       transition="fade-transition"
+      :type="alertType"
     >
       {{ alertMsg }}
     </v-alert>
     <v-progress-linear
       v-if="loading"
-      indeterminate
-      color="primary"
       class="mb-4"
+      color="primary"
+      indeterminate
     />
 
     <v-dialog v-model="showDeleteDialog" max-width="400">
@@ -33,10 +33,10 @@
 
     <v-text-field
       v-model="search"
-      label="Search Pokémon"
-      prepend-inner-icon="mdi-magnify"
       class="mb-4"
       clearable
+      label="Search Pokémon"
+      prepend-inner-icon="mdi-magnify"
     />
 
     <div class="d-flex align-center mb-2" style="gap: 1rem">
@@ -62,83 +62,83 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import api from '../services/api'
-import PokemonCard from './PokemonCard.vue'
-import ImageModal from './ImageModal.vue'
+  import { computed, onMounted, ref } from 'vue'
+  import api from '../services/api'
+  import ImageModal from './ImageModal.vue'
+  import PokemonCard from './PokemonCard.vue'
 
-const pokemons = ref([])
-const loading = ref(false)
+  const pokemons = ref([])
+  const loading = ref(false)
 
-async function fetchPokemons() {
-  loading.value = true
-  try {
-    const res = await api.get('/pokemon')
-    pokemons.value = res.data
-  } catch (error) {
-    console.error(error)
-    showAlert('Could not load Pokémon list. Please try again later.', 'error')
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(fetchPokemons)
-
-const alertMsg = ref('')
-const alertType = ref('success')
-
-function showAlert(msg, type = 'success') {
-  alertMsg.value = msg
-  alertType.value = type
-  setTimeout(() => {
-    alertMsg.value = ''
-  }, 2000)
-}
-
-const showDeleteDialog = ref(false)
-const pokemonToDelete = ref(null)
-
-function askDelete(pokemon) {
-  pokemonToDelete.value = pokemon
-  showDeleteDialog.value = true
-}
-
-async function confirmDelete() {
-  if (!pokemonToDelete.value) return
-  loading.value = true
-  try {
-    await api.delete(`/pokemon/${encodeURIComponent(pokemonToDelete.value.Name)}`)
-    pokemons.value = pokemons.value.filter(p => p.Name !== pokemonToDelete.value.Name)
-    showAlert('Pokémon deleted successfully', 'success')
-  } catch (error) {
-    console.error(error)
-    if (error.response && error.response.data && error.response.data.error) {
-      showAlert('Could not delete Pokémon: ' + error.response.data.error, 'error')
-    } else {
-      showAlert('An unexpected error occurred while deleting the Pokémon.', 'error')
+  async function fetchPokemons () {
+    loading.value = true
+    try {
+      const res = await api.get('/pokemon')
+      pokemons.value = res.data
+    } catch (error) {
+      console.error(error)
+      showAlert('Could not load Pokémon list. Please try again later.', 'error')
+    } finally {
+      loading.value = false
     }
-  } finally {
-    showDeleteDialog.value = false
-    pokemonToDelete.value = null
-    loading.value = false
   }
-}
 
-const search = ref('')
+  onMounted(fetchPokemons)
 
-const filteredPokemons = computed(() => {
-  if (!search.value) return pokemons.value
-  const term = search.value.toLowerCase()
-  return pokemons.value.filter(p =>
-    p.Name.toLowerCase().includes(term) ||
-    (p.Types && p.Types.some(t => t.toLowerCase().includes(term))) ||
-    (p.Attacks && p.Attacks.some(a => a.toLowerCase().includes(term)))
-  )
-})
+  const alertMsg = ref('')
+  const alertType = ref('success')
 
-const previewImage = ref('')
-function showImagePreview(image) {
-  previewImage.value = image
-}
+  function showAlert (msg, type = 'success') {
+    alertMsg.value = msg
+    alertType.value = type
+    setTimeout(() => {
+      alertMsg.value = ''
+    }, 2000)
+  }
+
+  const showDeleteDialog = ref(false)
+  const pokemonToDelete = ref(null)
+
+  function askDelete (pokemon) {
+    pokemonToDelete.value = pokemon
+    showDeleteDialog.value = true
+  }
+
+  async function confirmDelete () {
+    if (!pokemonToDelete.value) return
+    loading.value = true
+    try {
+      await api.delete(`/pokemon/${encodeURIComponent(pokemonToDelete.value.Name)}`)
+      pokemons.value = pokemons.value.filter(p => p.Name !== pokemonToDelete.value.Name)
+      showAlert('Pokémon deleted successfully', 'success')
+    } catch (error) {
+      console.error(error)
+      if (error.response && error.response.data && error.response.data.error) {
+        showAlert('Could not delete Pokémon: ' + error.response.data.error, 'error')
+      } else {
+        showAlert('An unexpected error occurred while deleting the Pokémon.', 'error')
+      }
+    } finally {
+      showDeleteDialog.value = false
+      pokemonToDelete.value = null
+      loading.value = false
+    }
+  }
+
+  const search = ref('')
+
+  const filteredPokemons = computed(() => {
+    if (!search.value) return pokemons.value
+    const term = search.value.toLowerCase()
+    return pokemons.value.filter(p =>
+      p.Name.toLowerCase().includes(term)
+      || (p.Types && p.Types.some(t => t.toLowerCase().includes(term)))
+      || (p.Attacks && p.Attacks.some(a => a.toLowerCase().includes(term))),
+    )
+  })
+
+  const previewImage = ref('')
+  function showImagePreview (image) {
+    previewImage.value = image
+  }
 </script>

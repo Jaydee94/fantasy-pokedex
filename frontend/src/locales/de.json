@@ -36,6 +36,7 @@
     "appearance": "Aussehen",
     "attacks": "Attacken",
     "category": "Kategorie",
-    "deleteTitle": "Pokémon löschen"
+    "deleteTitle": "Pokémon löschen",
+    "showStats": "Status anzeigen"
   }
 }

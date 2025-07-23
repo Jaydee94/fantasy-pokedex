@@ -31,7 +31,7 @@ func ConnectDatabase() {
 		if time.Since(start) > time.Minute {
 			log.Fatalf("Could not connect to database after 1 minute: %v", err)
 		}
-		// log.Printf("Waiting for database... (%v)", err)
+		log.Printf("Waiting for database... (%v)", err)
 		time.Sleep(2 * time.Second)
 	}
 

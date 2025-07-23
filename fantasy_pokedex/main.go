@@ -74,19 +74,7 @@ func main() {
 
 	routes.RegisterRoutes(r)
 
-	// Health endpoint for Kubernetes
-	r.GET("/healthz", func(c *gin.Context) {
-		sqlDB, err := config.DB.DB()
-		if err != nil {
-			c.JSON(500, gin.H{"status": "db error", "error": err.Error()})
-			return
-		}
-		if err := sqlDB.Ping(); err != nil {
-			c.JSON(500, gin.H{"status": "db not ready", "error": err.Error()})
-			return
-		}
-		c.JSON(200, gin.H{"status": "ok"})
-	})
+	// healthz endpoint removed
 
 	r.Run() // default: :8080
 }

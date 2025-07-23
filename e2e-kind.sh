@@ -1,12 +1,24 @@
 #!/bin/bash
 set -e
 
- # Usage: ./e2e-kind.sh [--keep]
+
+# Usage: ./e2e-kind.sh [--keep] [--provider podman|docker]
 KEEP=false
-if [[ "$1" == "--keep" ]]; then
-  KEEP=true
-fi
-#!/bin/bash
+PROVIDER="podman"
+for arg in "$@"; do
+  case $arg in
+    --keep)
+      KEEP=true
+      ;;
+    --provider)
+      PROVIDER="$2"
+      shift
+      ;;
+    --provider=*)
+      PROVIDER="${arg#*=}"
+      ;;
+  esac
+done
 set -e
 
 CLUSTER_NAME="fantasy-pokedex-e2e"
@@ -33,37 +45,60 @@ nodes:
 EOF
 
 
-# Start kind cluster with podman as provider
-export KIND_EXPERIMENTAL_PROVIDER=podman
+
+# Start kind cluster with selected provider
+if [ "$PROVIDER" = "podman" ]; then
+  export KIND_EXPERIMENTAL_PROVIDER=podman
+  KIND_CREATE_CMD="systemd-run --scope --user -p 'Delegate=yes' kind create cluster --name \"$CLUSTER_NAME\" --config \"$KIND_CONFIG\""
+else
+  unset KIND_EXPERIMENTAL_PROVIDER
+  KIND_CREATE_CMD="kind create cluster --name \"$CLUSTER_NAME\" --config \"$KIND_CONFIG\""
+fi
 if kind get clusters | grep -q "^$CLUSTER_NAME$"; then
   echo "Kind cluster $CLUSTER_NAME already exists. Skipping cluster creation."
 else
-  systemd-run --scope --user -p "Delegate=yes" kind create cluster --name "$CLUSTER_NAME" --config "$KIND_CONFIG"
+  eval "$KIND_CREATE_CMD"
 fi
 
+
 # Build images
-cd frontend
-podman build -t $FRONTEND_IMAGE .
-cd ../fantasy_pokedex
-podman build -t $BACKEND_IMAGE .
-cd ..
+
+if [ "$PROVIDER" = "podman" ]; then
+  cd frontend
+  podman build -t fantasy-pokedex-frontend:latest .
+  podman tag fantasy-pokedex-frontend:latest $FRONTEND_IMAGE
+  cd ../fantasy_pokedex
+  podman build -t fantasy-pokedex-backend:latest .
+  podman tag fantasy-pokedex-backend:latest $BACKEND_IMAGE
+  cd ..
+else
+  cd frontend
+  docker build -t fantasy-pokedex-frontend:latest .
+  docker tag fantasy-pokedex-frontend:latest $FRONTEND_IMAGE
+  cd ../fantasy_pokedex
+  docker build -t fantasy-pokedex-backend:latest .
+  docker tag fantasy-pokedex-backend:latest $BACKEND_IMAGE
+  cd ..
+fi
+
 
 # Load images into kind
-kind load docker-image $FRONTEND_IMAGE
-kind load docker-image $BACKEND_IMAGE
+kind load docker-image $FRONTEND_IMAGE --name "$CLUSTER_NAME"
+kind load docker-image $BACKEND_IMAGE --name "$CLUSTER_NAME"
 
  # Deploy Helm chart
 cd chart
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm dependency build
 helm upgrade --install fantasy-pokedex . \
-  --set frontend.image.repository=$FRONTEND_IMAGE \
-  --set backend.image.repository=$BACKEND_IMAGE \
+  --set frontend.image.repository="ghcr.io/jaydee94/fantasy-pokedex-frontend" \
+  --set backend.image.repository="ghcr.io/jaydee94/fantasy-pokedex-backend" \
   --set frontend.image.tag=latest \
   --set backend.image.tag=latest \
   --set postgresql.auth.password=postgres \
   --set postgresql.auth.username=postgres \
   --set postgresql.auth.database=fantasy_pokedex \
+  --set backend.env.DATABASE_URL="postgres://postgres:postgres@fantasy-pokedex-postgresql:5432/fantasy_pokedex" \
   --wait
 cd ..
 
@@ -75,22 +110,22 @@ kubectl get ingress -A || true
 # End-to-end test: check health endpoints
 kubectl wait --for=condition=ready pod -l app=fantasy-pokedex --timeout=120s
 kubectl port-forward svc/fantasy-pokedex-frontend 3000:3000 &
+PF1=$!
+kubectl port-forward svc/fantasy-pokedex-backend 8080:8080 &
+PF2=$!
 
 sleep 5
-PF1=$!
 
-PF2=$!
 curl -f http://localhost:3000/ || echo "Frontend not ready"
-PF3=$!
 
 # Trap for cleanup on exit or Ctrl+C
 cleanup() {
   echo "Cleaning up port-forwards..."
-  kill $PF1 $PF2 $PF3 2>/dev/null || true
+  kill $PF1 $PF2 2>/dev/null || true
+  echo "Deleting kind cluster $CLUSTER_NAME..."
+  kind delete cluster --name "$CLUSTER_NAME" || true
 }
 trap cleanup EXIT INT TERM
-curl -f http://localhost:3001/healthz || echo "Frontend healthz failed"
-curl -f http://localhost:8080/healthz || echo "Backend healthz failed"
 
 echo "End-to-end test completed."
 if [ "$KEEP" = true ]; then

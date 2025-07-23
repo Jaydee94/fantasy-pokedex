@@ -36,6 +36,7 @@
     "appearance": "Appearance",
     "attacks": "Attacks",
     "category": "Category",
-    "deleteTitle": "Delete Pokémon"
+    "deleteTitle": "Delete Pokémon",
+    "showStats": "Show Stats"
   }
 }
