@@ -1,0 +1,39 @@
+name: Release Helm Chart
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package-and-push-helm:
+    name: Package and Push Helm Chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.15.2
+
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+
+      - name: Package Helm chart
+        run: helm package chart --destination packaged-charts
+
+      - name: Push Helm chart to OCI registry
+        run: |
+          # Set chart version to release tag (strip leading 'v' if present)
+          CHART_VERSION="${{ github.event.release.tag_name }}"
+          CHART_VERSION_CLEANED=$(echo "$CHART_VERSION" | sed 's/^v//')
+          yq -i ".version = \"$CHART_VERSION_CLEANED\"" chart/Chart.yaml
+
+          # Update image tags in values.yaml
+          yq -i '.backend.image.tag = "'"$CHART_VERSION_CLEANED"'"' chart/values.yaml
+          yq -i '.frontend.image.tag = "'"$CHART_VERSION_CLEANED"'"' chart/values.yaml
+
+          helm package chart --destination packaged-charts
+          CHART_PACKAGE=$(ls packaged-charts/*.tgz)
+          helm push $CHART_PACKAGE oci://ghcr.io/${{ github.repository }}/charts --version $CHART_VERSION_CLEANED
