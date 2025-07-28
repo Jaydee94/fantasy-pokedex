@@ -4,8 +4,8 @@
     <v-app-bar app color="#356abc" dark height="80" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: linear-gradient(90deg, #356abc 0%, #3d2376 100%);">
       <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;">
         <v-img
-          src="@/assets/fantasy-pokedex-logo.png"
           max-height="130"
+          src="@/assets/fantasy_pokedex.png"
           style="max-width: 200px; margin: 0 auto; pointer-events: auto;"
         />
       </div>
@@ -16,11 +16,11 @@
         <AdminLogin v-else />
         <v-select
           v-model="currentLocale"
-          :items="locales"
-          item-title="label"
-          item-value="code"
           dense
           hide-details
+          item-title="label"
+          item-value="code"
+          :items="locales"
           style="width: 120px; min-width: 100px;"
           variant="outlined"
         />

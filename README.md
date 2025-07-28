@@ -1,7 +1,7 @@
 
 # Fantasy Pokedex
 <p align="center">
-  <img src="frontend/src/assets/fantasy-pokedex-logo.png" alt="Fantasy Pokedex Logo" width="300" />
+  <img src="frontend/src/assets/fantasy_pokedex.png" alt="Fantasy Pokedex Logo" width="300" />
 </p>
 
 A modern fullstack project for your own fantasy Pokédex, built with Go (backend), PostgreSQL, and Vue 3 + Vuetify (frontend).
