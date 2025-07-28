@@ -36,4 +36,4 @@ jobs:
 
           helm package chart --destination packaged-charts
           CHART_PACKAGE=$(ls packaged-charts/*.tgz)
-          helm push $CHART_PACKAGE oci://ghcr.io/${{ github.repository }}/charts --version $CHART_VERSION_CLEANED
+          helm push $CHART_PACKAGE oci://ghcr.io/${{ github.repository }}/charts
