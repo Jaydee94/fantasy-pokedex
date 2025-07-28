@@ -36,4 +36,7 @@ jobs:
 
           helm package chart --destination packaged-charts
           CHART_PACKAGE=$(ls packaged-charts/*.tgz)
-          helm push $CHART_PACKAGE oci://ghcr.io/${{ github.repository }}/charts
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "Chart package path: $CHART_PACKAGE"
+          helm env
+          helm push $CHART_PACKAGE oci://ghcr.io/$REPO_LOWER/charts
