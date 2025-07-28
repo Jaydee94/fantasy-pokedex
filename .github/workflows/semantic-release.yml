@@ -1,24 +1,37 @@
 name: Semantic Release
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  semantic-release:
+  release:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
-      - name: Checkout code
+      - name: Setup | Checkout Repository on Release Branch
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Action | Semantic Version Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+          commit: false
+          changelog: false
 
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+      - name: Publish | Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
